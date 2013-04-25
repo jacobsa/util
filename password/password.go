@@ -57,6 +57,11 @@ func handleInterrupt(c <-chan os.Signal, f func()) {
 	os.Exit(-1)
 }
 
+// Read a password from the terminal without echoing it. No space is added
+// after the prompt.
+//
+// Don't mistake this function for portable; it probably doesn't work anywhere
+// except OS X.
 func ReadPassword(prompt string) string {
 	// Grab the current terminal settings.
 	origTermSettings := getTermSettings()
