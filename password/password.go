@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package password
 
 /*
 #include <termios.h>
@@ -57,7 +57,7 @@ func handleInterrupt(c <-chan os.Signal, f func()) {
 	os.Exit(-1)
 }
 
-func readPassword(prompt string) string {
+func ReadPassword(prompt string) string {
 	// Grab the current terminal settings.
 	origTermSettings := getTermSettings()
 
