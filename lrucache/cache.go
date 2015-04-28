@@ -24,7 +24,8 @@ import (
 // synchronization is required. Gob encoding/decoding is supported as long as
 // all values are registered using gob.Register.
 //
-// May be used directly as a field in a larger struct. Must be created with New.
+// May be used directly as a field in a larger struct. Must be created with New
+// or initialized using gob decoding.
 type Cache struct {
 	/////////////////////////
 	// Constant data
@@ -56,7 +57,9 @@ type elem struct {
 
 // Initialize a cache with the supplied capacity.
 func New(capacity int) (c Cache) {
-	panic("TODO")
+	c.capacity = capacity
+	c.index = make(map[string]*list.Element)
+	return
 }
 
 // Panic if any internal invariants have been violated. The careful user can
