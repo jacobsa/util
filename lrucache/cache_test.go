@@ -18,6 +18,7 @@ package lrucache_test
 import (
 	"testing"
 
+	. "github.com/jacobsa/oglematchers"
 	. "github.com/jacobsa/ogletest"
 	"github.com/jacobsa/util/lrucache"
 )
@@ -50,7 +51,10 @@ func (t *CacheTest) LookUpInEmptyCache() {
 }
 
 func (t *CacheTest) InsertNilValue() {
-	AssertFalse(true, "TODO")
+	ExpectThat(
+		func() { t.cache.Insert("taco", nil) },
+		Panics(HasSubstr("nil value")),
+	)
 }
 
 func (t *CacheTest) LookUpUnknownKey() {
