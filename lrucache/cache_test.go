@@ -132,6 +132,31 @@ func (t *CacheTest) Encode_EmptyCache() {
 	ExpectEq(nil, decoded.LookUp("taco"))
 }
 
-func (t *CacheTest) Encode_PreservesLruOrderAndCapacity() {
-	AssertFalse(true, "TODO")
+func (t *CacheTest) Encode_PreservesLRUOrderAndCapacity() {
+	// Contents
+	AssertEq(3, capacity)
+
+	t.cache.Insert("burrito", 17)
+	t.cache.Insert("taco", 19)                      // Least recent
+	t.cache.Insert("enchilada", []byte{0x23, 0x29}) // Second most recent
+	AssertEq(17, t.cache.LookUp("burrito"))         // Most recent
+
+	// Encode
+	buf := new(bytes.Buffer)
+	encoder := gob.NewEncoder(buf)
+	AssertEq(nil, encoder.Encode(&t.cache))
+
+	// Decode
+	decoder := gob.NewDecoder(buf)
+	var decoded lrucache.Cache
+	AssertEq(nil, decoder.Decode(&decoded))
+
+	// Insert another.
+	decoded.Insert("queso", 29)
+
+	// See what's left.
+	ExpectEq(nil, decoded.LookUp("taco"))
+	ExpectEq(17, decoded.LookUp("burrito"))
+	ExpectThat(t.cache.LookUp("enchilada"), DeepEquals([]byte{0x23, 0x29}))
+	ExpectEq(29, decoded.LookUp("queso"))
 }
