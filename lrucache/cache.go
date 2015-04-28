@@ -15,7 +15,10 @@
 
 package lrucache
 
-import "errors"
+import (
+	"container/list"
+	"errors"
+)
 
 // An LRU cache for arbitrary values indexed by string keys. External
 // synchronization is required. Gob encoding/decoding is supported as long as
@@ -23,6 +26,32 @@ import "errors"
 //
 // May be used directly as a field in a larger struct. Must be created with New.
 type Cache struct {
+	/////////////////////////
+	// Constant data
+	/////////////////////////
+
+	capacity int
+
+	/////////////////////////
+	// Mutable state
+	/////////////////////////
+
+	// List of elements, with least recently used at the tail.
+	//
+	// INVARIANT: elems.Len() <= capacity
+	// INVARIANT: Each element is of type elem
+	elems list.List
+
+	// Index of elements by name.
+	//
+	// INVARIANT: Contains all and only the elements of elem
+	// INVARIANT: For each k, v: v.Value.(elem).Key == k
+	index map[string]*list.Element
+}
+
+type elem struct {
+	Key   string
+	Value interface{}
 }
 
 // Initialize a cache with the supplied capacity.
