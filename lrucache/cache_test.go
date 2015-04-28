@@ -44,6 +44,34 @@ func (t *CacheTest) SetUp(ti *TestInfo) {
 // Test functions
 ////////////////////////////////////////////////////////////////////////
 
-func (t *CacheTest) DoesFoo() {
+func (t *CacheTest) LookUp_Empty() {
+	AssertFalse(true, "TODO")
+}
+
+func (t *CacheTest) InsertNilValue() {
+	AssertFalse(true, "TODO")
+}
+
+func (t *CacheTest) LookUpUnknownKey() {
+	AssertFalse(true, "TODO")
+}
+
+func (t *CacheTest) FillUpToCapacity() {
+	AssertFalse(true, "TODO")
+}
+
+func (t *CacheTest) ExpiresLeastRecentlyUsed() {
+	AssertFalse(true, "TODO")
+}
+
+func (t *CacheTest) Overwrite() {
+	AssertFalse(true, "TODO")
+}
+
+func (t *CacheTest) Encode_EmptyCache() {
+	AssertFalse(true, "TODO")
+}
+
+func (t *CacheTest) Encode_PreservesLruOrderAndCapacity() {
 	AssertFalse(true, "TODO")
 }
