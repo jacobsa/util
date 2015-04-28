@@ -96,7 +96,23 @@ func (t *CacheTest) ExpiresLeastRecentlyUsed() {
 }
 
 func (t *CacheTest) Overwrite() {
-	AssertFalse(true, "TODO")
+	// Write several times
+	AssertEq(nil, t.cache.Insert("taco", 17))
+	AssertEq(17, t.cache.Insert("taco", 19))
+	AssertEq(23, t.cache.Insert("taco", 23))
+
+	// Look up
+	ExpectEq(23, t.cache.LookUp("taco"))
+
+	// The overwritten entries shouldn't count toward capacity.
+	AssertEq(3, capacity)
+
+	t.cache.Insert("burrito", 29)
+	t.cache.Insert("enchilada", 31)
+
+	ExpectEq(23, t.cache.LookUp("taco"))
+	ExpectEq(29, t.cache.LookUp("burrito"))
+	ExpectEq(31, t.cache.LookUp("enchilada"))
 }
 
 func (t *CacheTest) Encode_EmptyCache() {
