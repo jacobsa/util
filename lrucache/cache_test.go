@@ -78,7 +78,21 @@ func (t *CacheTest) FillUpToCapacity() {
 }
 
 func (t *CacheTest) ExpiresLeastRecentlyUsed() {
-	AssertFalse(true, "TODO")
+	AssertEq(3, capacity)
+
+	t.cache.Insert("burrito", 17)
+	t.cache.Insert("taco", 19)              // Least recent
+	t.cache.Insert("enchilada", 23)         // Second most recent
+	AssertEq(17, t.cache.LookUp("burrito")) // Most recent
+
+	// Insert another.
+	t.cache.Insert("queso", 29)
+
+	// See what's left.
+	ExpectEq(nil, t.cache.LookUp("taco"))
+	ExpectEq(17, t.cache.LookUp("burrito"))
+	ExpectEq(23, t.cache.LookUp("enchilada"))
+	ExpectEq(29, t.cache.LookUp("queso"))
 }
 
 func (t *CacheTest) Overwrite() {
