@@ -21,8 +21,13 @@ import "errors"
 // synchronization is required. Gob encoding/decoding is supported as long as
 // all values are registered using gob.Register.
 //
-// Must be created with New.
+// May be used directly as a field in a larger struct. Must be created with New.
 type Cache struct {
+}
+
+// Initialize a cache with the supplied capacity.
+func New(capacity int) (c Cache) {
+	panic("TODO")
 }
 
 // Panic if any internal invariants have been violated. The careful user can
@@ -38,7 +43,9 @@ func (c *Cache) CheckInvariants() {
 // Insert the supplied value into the cache, overwriting any previous entry for
 // the given key. The value must be non-nil. Return the overwritten value, or
 // nil if none.
-func (c *Cache) Insert(key string, value interface{}) (prev interface{}) {
+func (c *Cache) Insert(
+	key string,
+	value interface{}) (prev interface{}) {
 	panic("TODO")
 }
 
