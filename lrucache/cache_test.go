@@ -40,7 +40,7 @@ type CacheTest struct {
 func init() { RegisterTestSuite(&CacheTest{}) }
 
 func (t *CacheTest) SetUp(ti *TestInfo) {
-	panic("TODO")
+	t.cache = lrucache.New(capacity)
 }
 
 ////////////////////////////////////////////////////////////////////////
