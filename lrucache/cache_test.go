@@ -16,6 +16,8 @@
 package lrucache_test
 
 import (
+	"bytes"
+	"encoding/gob"
 	"testing"
 
 	. "github.com/jacobsa/oglematchers"
@@ -116,7 +118,18 @@ func (t *CacheTest) Overwrite() {
 }
 
 func (t *CacheTest) Encode_EmptyCache() {
-	AssertFalse(true, "TODO")
+	// Encode
+	buf := new(bytes.Buffer)
+	encoder := gob.NewEncoder(buf)
+	AssertEq(nil, encoder.Encode(&t.cache))
+
+	// Decode
+	decoder := gob.NewDecoder(buf)
+	var decoded lrucache.Cache
+	AssertEq(nil, decoder.Decode(&decoded))
+
+	ExpectEq(nil, decoded.LookUp(""))
+	ExpectEq(nil, decoded.LookUp("taco"))
 }
 
 func (t *CacheTest) Encode_PreservesLruOrderAndCapacity() {
