@@ -41,6 +41,11 @@ func (c *Cache) Insert(key string, value interface{}) (prev interface{}) {
 	panic("TODO")
 }
 
+// Erase any entry for the supplied key.
+func (c *Cache) Erase(key string) {
+	panic("TODO")
+}
+
 // Look up a previously-inserted value for the given key. Return nil if no
 // value is present.
 func (c *Cache) LookUp(key string) interface{} {
