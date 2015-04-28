@@ -58,7 +58,11 @@ func (t *CacheTest) InsertNilValue() {
 }
 
 func (t *CacheTest) LookUpUnknownKey() {
-	AssertFalse(true, "TODO")
+	t.cache.Insert("burrito", 17)
+	t.cache.Insert("taco", 19)
+
+	ExpectEq(nil, t.cache.LookUp(""))
+	ExpectEq(nil, t.cache.LookUp("enchilada"))
 }
 
 func (t *CacheTest) FillUpToCapacity() {
