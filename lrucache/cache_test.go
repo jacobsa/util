@@ -44,8 +44,9 @@ func (t *CacheTest) SetUp(ti *TestInfo) {
 // Test functions
 ////////////////////////////////////////////////////////////////////////
 
-func (t *CacheTest) LookUp_Empty() {
-	AssertFalse(true, "TODO")
+func (t *CacheTest) LookUpInEmptyCache() {
+	ExpectEq(nil, t.cache.LookUp(""))
+	ExpectEq(nil, t.cache.LookUp("taco"))
 }
 
 func (t *CacheTest) InsertNilValue() {
