@@ -28,19 +28,53 @@ import (
 func TestCache(t *testing.T) { RunTests(t) }
 
 ////////////////////////////////////////////////////////////////////////
+// Invariant-checking cache
+////////////////////////////////////////////////////////////////////////
+
+type invariantsCache struct {
+	wrapped lrucache.Cache
+}
+
+func (c *invariantsCache) Insert(
+	key string,
+	value interface{}) (prev interface{}) {
+	c.wrapped.CheckInvariants()
+	defer c.wrapped.CheckInvariants()
+
+	prev = c.wrapped.Insert(key, value)
+	return
+}
+
+func (c *invariantsCache) Erase(key string) {
+	c.wrapped.CheckInvariants()
+	defer c.wrapped.CheckInvariants()
+
+	c.wrapped.Erase(key)
+	return
+}
+
+func (c *invariantsCache) LookUp(key string) (v interface{}) {
+	c.wrapped.CheckInvariants()
+	defer c.wrapped.CheckInvariants()
+
+	v = c.wrapped.LookUp(key)
+	return
+}
+
+////////////////////////////////////////////////////////////////////////
 // Boilerplate
 ////////////////////////////////////////////////////////////////////////
 
 const capacity = 3
 
 type CacheTest struct {
-	cache lrucache.Cache
+	cache invariantsCache
 }
 
 func init() { RegisterTestSuite(&CacheTest{}) }
 
 func (t *CacheTest) SetUp(ti *TestInfo) {
-	t.cache = lrucache.New(capacity)
+	t.cache.wrapped = lrucache.New(capacity)
 }
 
 ////////////////////////////////////////////////////////////////////////
