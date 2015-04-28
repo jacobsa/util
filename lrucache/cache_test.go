@@ -66,7 +66,15 @@ func (t *CacheTest) LookUpUnknownKey() {
 }
 
 func (t *CacheTest) FillUpToCapacity() {
-	AssertFalse(true, "TODO")
+	AssertEq(3, capacity)
+
+	t.cache.Insert("burrito", 17)
+	t.cache.Insert("taco", 19)
+	t.cache.Insert("enchilada", []byte{0x23, 0x29})
+
+	ExpectEq(17, t.cache.LookUp("burrito"))
+	ExpectEq(19, t.cache.LookUp("taco"))
+	ExpectThat(t.cache.LookUp("enchilada"), DeepEquals([]byte{0x23, 0x29}))
 }
 
 func (t *CacheTest) ExpiresLeastRecentlyUsed() {
