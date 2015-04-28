@@ -18,6 +18,8 @@ package lrucache
 import (
 	"container/list"
 	"errors"
+	"fmt"
+	"reflect"
 )
 
 // An LRU cache for arbitrary values indexed by string keys. External
@@ -45,8 +47,8 @@ type Cache struct {
 
 	// Index of elements by name.
 	//
-	// INVARIANT: Contains all and only the elements of elem
 	// INVARIANT: For each k, v: v.Value.(elem).Key == k
+	// INVARIANT: Contains all and only the elements of elem
 	index map[string]*list.Element
 }
 
@@ -65,7 +67,31 @@ func New(capacity int) (c Cache) {
 // Panic if any internal invariants have been violated. The careful user can
 // arrange to call this at crucial moments.
 func (c *Cache) CheckInvariants() {
-	panic("TODO")
+	// INVARIANT: elems.Len() <= capacity
+	if !(c.elems.Len() <= c.capacity) {
+		panic(fmt.Sprintf("Length %v over capacity %v", c.elems.Len(), c.capacity))
+	}
+
+	// INVARIANT: Each element is of type elem
+	for e := c.elems.Front(); e != nil; e = e.Next() {
+		switch e.Value.(type) {
+		case elem:
+		default:
+			panic(fmt.Sprintf("Unexpected element type: %v", reflect.TypeOf(e.Value)))
+		}
+	}
+
+	// INVARIANT: For each k, v: v.Value.(elem).Key == k
+	// INVARIANT: Contains all and only the elements of elem
+	if c.elems.Len() != len(c.index) {
+		panic(fmt.Sprintf("Length mismatch: %v vs. %v", c.elems.Len(), len(c.index)))
+	}
+
+	for e := c.elems.Front(); e != nil; e = e.Next() {
+		if c.index[e.Value.(elem).Key] != e {
+			panic(fmt.Sprintf("Mismatch for key %v", e.Value.(elem).Key))
+		}
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////
