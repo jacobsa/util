@@ -19,7 +19,6 @@ import (
 	"bytes"
 	"container/list"
 	"encoding/gob"
-	"errors"
 	"fmt"
 	"reflect"
 )
@@ -204,6 +203,30 @@ func (c *Cache) GobEncode() (b []byte, err error) {
 }
 
 func (c *Cache) GobDecode(b []byte) (err error) {
-	err = errors.New("TODO")
+	buf := bytes.NewBuffer(b)
+	decoder := gob.NewDecoder(buf)
+
+	// Decode the capacity.
+	var capacity int
+	if err = decoder.Decode(&capacity); err != nil {
+		err = fmt.Errorf("Decoding capacity: %v", err)
+		return
+	}
+
+	*c = New(capacity)
+
+	// Decode the entries.
+	var entrySlice []entry
+	if err = decoder.Decode(&entrySlice); err != nil {
+		err = fmt.Errorf("Decoding entries: %v", err)
+		return
+	}
+
+	// Store each.
+	for _, entry := range entrySlice {
+		e := c.entries.PushBack(entry)
+		c.index[entry.Key] = e
+	}
+
 	return
 }
