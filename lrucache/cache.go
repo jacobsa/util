@@ -40,20 +40,20 @@ type Cache struct {
 	// Mutable state
 	/////////////////////////
 
-	// List of elements, with least recently used at the tail.
+	// List of cache entries, with least recently used at the tail.
 	//
-	// INVARIANT: elems.Len() <= capacity
-	// INVARIANT: Each element is of type elem
-	elems list.List
+	// INVARIANT: entries.Len() <= capacity
+	// INVARIANT: Each element is of type entry
+	entries list.List
 
 	// Index of elements by name.
 	//
-	// INVARIANT: For each k, v: v.Value.(elem).Key == k
-	// INVARIANT: Contains all and only the elements of elem
+	// INVARIANT: For each k, v: v.Value.(entry).Key == k
+	// INVARIANT: Contains all and only the elements of entries
 	index map[string]*list.Element
 }
 
-type elem struct {
+type entry struct {
 	Key   string
 	Value interface{}
 }
@@ -74,32 +74,38 @@ func (c *Cache) CheckInvariants() {
 		panic(fmt.Sprintf("Invalid capacity: %v", capacity))
 	}
 
-	// INVARIANT: elems.Len() <= capacity
-	if !(c.elems.Len() <= c.capacity) {
-		panic(fmt.Sprintf("Length %v over capacity %v", c.elems.Len(), c.capacity))
+	// INVARIANT: entries.Len() <= capacity
+	if !(c.entries.Len() <= c.capacity) {
+		panic(fmt.Sprintf("Length %v over capacity %v", c.entries.Len(), c.capacity))
 	}
 
-	// INVARIANT: Each element is of type elem
-	for e := c.elems.Front(); e != nil; e = e.Next() {
+	// INVARIANT: Each element is of type entry
+	for e := c.entries.Front(); e != nil; e = e.Next() {
 		switch e.Value.(type) {
-		case elem:
+		case entry:
 		default:
 			panic(fmt.Sprintf("Unexpected element type: %v", reflect.TypeOf(e.Value)))
 		}
 	}
 
-	// INVARIANT: For each k, v: v.Value.(elem).Key == k
-	// INVARIANT: Contains all and only the elements of elem
-	if c.elems.Len() != len(c.index) {
-		panic(fmt.Sprintf("Length mismatch: %v vs. %v", c.elems.Len(), len(c.index)))
+	// INVARIANT: For each k, v: v.Value.(entry).Key == k
+	// INVARIANT: Contains all and only the elements of entries
+	if c.entries.Len() != len(c.index) {
+		panic(fmt.Sprintf(
+			"Length mismatch: %v vs. %v",
+			c.entries.Len(),
+			len(c.index)))
 	}
 
-	for e := c.elems.Front(); e != nil; e = e.Next() {
-		if c.index[e.Value.(elem).Key] != e {
-			panic(fmt.Sprintf("Mismatch for key %v", e.Value.(elem).Key))
+	for e := c.entries.Front(); e != nil; e = e.Next() {
+		if c.index[e.Value.(entry).Key] != e {
+			s
+			panic(fmt.Sprintf("Mismatch for key %v", e.Value.(entry).Key))
 		}
 	}
 }
+
+func (c *Cache) evictOne()
 
 ////////////////////////////////////////////////////////////////////////
 // Cache interface
