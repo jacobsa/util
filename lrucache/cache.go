@@ -121,6 +121,10 @@ func (c *Cache) evictOne() {
 func (c *Cache) Insert(
 	key string,
 	value interface{}) {
+	if value == nil {
+		panic("nil values are not supported")
+	}
+
 	// Erase any existing element for this key.
 	c.Erase(key)
 
