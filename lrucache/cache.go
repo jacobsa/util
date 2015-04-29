@@ -71,7 +71,7 @@ func New(capacity int) (c Cache) {
 func (c *Cache) CheckInvariants() {
 	// INVARIANT: capacity > 0
 	if !(c.capacity > 0) {
-		panic(fmt.Sprintf("Invalid capacity: %v", capacity))
+		panic(fmt.Sprintf("Invalid capacity: %v", c.capacity))
 	}
 
 	// INVARIANT: entries.Len() <= capacity
@@ -99,7 +99,6 @@ func (c *Cache) CheckInvariants() {
 
 	for e := c.entries.Front(); e != nil; e = e.Next() {
 		if c.index[e.Value.(entry).Key] != e {
-			s
 			panic(fmt.Sprintf("Mismatch for key %v", e.Value.(entry).Key))
 		}
 	}
