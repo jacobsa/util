@@ -16,7 +16,9 @@
 package lrucache
 
 import (
+	"bytes"
 	"container/list"
+	"encoding/gob"
 	"errors"
 	"fmt"
 	"reflect"
@@ -171,7 +173,33 @@ func (c *Cache) LookUp(key string) (value interface{}) {
 ////////////////////////////////////////////////////////////////////////
 
 func (c *Cache) GobEncode() (b []byte, err error) {
-	err = errors.New("TODO")
+	// Implementation note: we have a custom gob encoding method because it's not
+	// clear from encoding/gob's documentation that its flattening process won't
+	// ruin our list and map values. Even if that works out fine, we don't need
+	// the redundant index on the wire.
+
+	var buf bytes.Buffer
+	encoder := gob.NewEncoder(&buf)
+
+	// Create a slice containing all of our entries, in order by recency of use.
+	entrySlice := make([]entry, 0, c.entries.Len())
+	for e := c.entries.Front(); e != nil; e = e.Next() {
+		entrySlice = append(entrySlice, e.Value.(entry))
+	}
+
+	// Encode the capacity.
+	if err = encoder.Encode(c.capacity); err != nil {
+		err = fmt.Errorf("Encoding capacity: %v", err)
+		return
+	}
+
+	// Encode the entries.
+	if err = encoder.Encode(entrySlice); err != nil {
+		err = fmt.Errorf("Encoding entries: %v", err)
+		return
+	}
+
+	b = buf.Bytes()
 	return
 }
 
