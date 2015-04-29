@@ -136,7 +136,13 @@ func (c *Cache) Insert(
 
 // Erase any entry for the supplied key.
 func (c *Cache) Erase(key string) {
-	panic("TODO")
+	e := c.index[key]
+	if e == nil {
+		return
+	}
+
+	delete(c.index, key)
+	c.entries.Remove(e)
 }
 
 // Look up a previously-inserted value for the given key. Return nil if no
