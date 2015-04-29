@@ -155,7 +155,7 @@ func (t *CacheTest) Encode_EmptyCache() {
 	// Encode
 	buf := new(bytes.Buffer)
 	encoder := gob.NewEncoder(buf)
-	AssertEq(nil, encoder.Encode(&t.cache))
+	AssertEq(nil, encoder.Encode(&t.cache.wrapped))
 
 	// Decode
 	decoder := gob.NewDecoder(buf)
@@ -178,7 +178,7 @@ func (t *CacheTest) Encode_PreservesLRUOrderAndCapacity() {
 	// Encode
 	buf := new(bytes.Buffer)
 	encoder := gob.NewEncoder(buf)
-	AssertEq(nil, encoder.Encode(&t.cache))
+	AssertEq(nil, encoder.Encode(&t.cache.wrapped))
 
 	// Decode
 	decoder := gob.NewDecoder(buf)
