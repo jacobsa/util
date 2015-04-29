@@ -32,32 +32,32 @@ func TestCache(t *testing.T) { RunTests(t) }
 ////////////////////////////////////////////////////////////////////////
 
 type invariantsCache struct {
-	wrapped lrucache.Cache
+	Wrapped lrucache.Cache
 }
 
 func (c *invariantsCache) Insert(
 	key string,
 	value interface{}) {
-	c.wrapped.CheckInvariants()
-	defer c.wrapped.CheckInvariants()
+	c.Wrapped.CheckInvariants()
+	defer c.Wrapped.CheckInvariants()
 
-	c.wrapped.Insert(key, value)
+	c.Wrapped.Insert(key, value)
 	return
 }
 
 func (c *invariantsCache) Erase(key string) {
-	c.wrapped.CheckInvariants()
-	defer c.wrapped.CheckInvariants()
+	c.Wrapped.CheckInvariants()
+	defer c.Wrapped.CheckInvariants()
 
-	c.wrapped.Erase(key)
+	c.Wrapped.Erase(key)
 	return
 }
 
 func (c *invariantsCache) LookUp(key string) (v interface{}) {
-	c.wrapped.CheckInvariants()
-	defer c.wrapped.CheckInvariants()
+	c.Wrapped.CheckInvariants()
+	defer c.Wrapped.CheckInvariants()
 
-	v = c.wrapped.LookUp(key)
+	v = c.Wrapped.LookUp(key)
 	return
 }
 
@@ -74,7 +74,7 @@ type CacheTest struct {
 func init() { RegisterTestSuite(&CacheTest{}) }
 
 func (t *CacheTest) SetUp(ti *TestInfo) {
-	t.cache.wrapped = lrucache.New(capacity)
+	t.cache.Wrapped = lrucache.New(capacity)
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -155,11 +155,11 @@ func (t *CacheTest) Encode_EmptyCache() {
 	// Encode
 	buf := new(bytes.Buffer)
 	encoder := gob.NewEncoder(buf)
-	AssertEq(nil, encoder.Encode(&t.cache.wrapped))
+	AssertEq(nil, encoder.Encode(&t.cache))
 
 	// Decode
 	decoder := gob.NewDecoder(buf)
-	var decoded lrucache.Cache
+	var decoded invariantsCache
 	AssertEq(nil, decoder.Decode(&decoded))
 
 	ExpectEq(nil, decoded.LookUp(""))
@@ -178,11 +178,11 @@ func (t *CacheTest) Encode_PreservesLRUOrderAndCapacity() {
 	// Encode
 	buf := new(bytes.Buffer)
 	encoder := gob.NewEncoder(buf)
-	AssertEq(nil, encoder.Encode(&t.cache.wrapped))
+	AssertEq(nil, encoder.Encode(&t.cache))
 
 	// Decode
 	decoder := gob.NewDecoder(buf)
-	var decoded lrucache.Cache
+	var decoded invariantsCache
 	AssertEq(nil, decoder.Decode(&decoded))
 
 	// Insert another.
