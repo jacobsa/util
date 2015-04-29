@@ -147,8 +147,14 @@ func (c *Cache) Erase(key string) {
 
 // Look up a previously-inserted value for the given key. Return nil if no
 // value is present.
-func (c *Cache) LookUp(key string) interface{} {
-	panic("TODO")
+func (c *Cache) LookUp(key string) (value interface{}) {
+	e := c.index[key]
+	if e == nil {
+		return
+	}
+
+	value = e.Value.(entry).Value
+	return
 }
 
 ////////////////////////////////////////////////////////////////////////
