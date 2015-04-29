@@ -104,7 +104,13 @@ func (c *Cache) CheckInvariants() {
 	}
 }
 
-func (c *Cache) evictOne()
+func (c *Cache) evictOne() {
+	e := c.entries.Back()
+	key := e.Value.(entry).Key
+
+	c.entries.Remove(e)
+	delete(c.index, key)
+}
 
 ////////////////////////////////////////////////////////////////////////
 // Cache interface
@@ -115,7 +121,17 @@ func (c *Cache) evictOne()
 func (c *Cache) Insert(
 	key string,
 	value interface{}) {
-	panic("TODO")
+	// Erase any existing element for this key.
+	c.Erase(key)
+
+	// Add a new element.
+	e := c.entries.PushFront(entry{key, value})
+	c.index[key] = e
+
+	// Evict until we're at or below capacity.
+	for c.entries.Len() > c.capacity {
+		c.evictOne()
+	}
 }
 
 // Erase any entry for the supplied key.
