@@ -148,11 +148,16 @@ func (c *Cache) Erase(key string) {
 // Look up a previously-inserted value for the given key. Return nil if no
 // value is present.
 func (c *Cache) LookUp(key string) (value interface{}) {
+	// Consult the index.
 	e := c.index[key]
 	if e == nil {
 		return
 	}
 
+	// This is now the most recently used entry.
+	c.entries.MoveToFront(e)
+
+	// Return the value.
 	value = e.Value.(entry).Value
 	return
 }
