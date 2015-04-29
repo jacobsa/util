@@ -33,6 +33,7 @@ type Cache struct {
 	// Constant data
 	/////////////////////////
 
+	// INVARIANT: capacity > 0
 	capacity int
 
 	/////////////////////////
@@ -57,7 +58,8 @@ type elem struct {
 	Value interface{}
 }
 
-// Initialize a cache with the supplied capacity.
+// Initialize a cache with the supplied capacity, which must be greater than
+// zero.
 func New(capacity int) (c Cache) {
 	c.capacity = capacity
 	c.index = make(map[string]*list.Element)
@@ -67,6 +69,11 @@ func New(capacity int) (c Cache) {
 // Panic if any internal invariants have been violated. The careful user can
 // arrange to call this at crucial moments.
 func (c *Cache) CheckInvariants() {
+	// INVARIANT: capacity > 0
+	if !(c.capacity > 0) {
+		panic(fmt.Sprintf("Invalid capacity: %v", capacity))
+	}
+
 	// INVARIANT: elems.Len() <= capacity
 	if !(c.elems.Len() <= c.capacity) {
 		panic(fmt.Sprintf("Length %v over capacity %v", c.elems.Len(), c.capacity))
