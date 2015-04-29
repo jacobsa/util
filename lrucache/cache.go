@@ -99,11 +99,10 @@ func (c *Cache) CheckInvariants() {
 ////////////////////////////////////////////////////////////////////////
 
 // Insert the supplied value into the cache, overwriting any previous entry for
-// the given key. The value must be non-nil. Return the overwritten value, or
-// nil if none.
+// the given key. The value must be non-nil.
 func (c *Cache) Insert(
 	key string,
-	value interface{}) (prev interface{}) {
+	value interface{}) {
 	panic("TODO")
 }
 

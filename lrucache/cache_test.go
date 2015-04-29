@@ -37,11 +37,11 @@ type invariantsCache struct {
 
 func (c *invariantsCache) Insert(
 	key string,
-	value interface{}) (prev interface{}) {
+	value interface{}) {
 	c.wrapped.CheckInvariants()
 	defer c.wrapped.CheckInvariants()
 
-	prev = c.wrapped.Insert(key, value)
+	c.wrapped.Insert(key, value)
 	return
 }
 
@@ -133,9 +133,9 @@ func (t *CacheTest) ExpiresLeastRecentlyUsed() {
 
 func (t *CacheTest) Overwrite() {
 	// Write several times
-	AssertEq(nil, t.cache.Insert("taco", 17))
-	AssertEq(17, t.cache.Insert("taco", 19))
-	AssertEq(23, t.cache.Insert("taco", 23))
+	t.cache.Insert("taco", 17)
+	t.cache.Insert("taco", 19)
+	t.cache.Insert("taco", 23)
 
 	// Look up
 	ExpectEq(23, t.cache.LookUp("taco"))
