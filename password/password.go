@@ -31,7 +31,7 @@ import (
 
 // Thin wrapper around tcgetattr.
 func getTermSettings() (settings C.struct_termios) {
-	res := C.tcgetattr(C.int(os.Stdout.Fd()), &settings)
+	res := C.tcgetattr(C.int(os.Stderr.Fd()), &settings)
 	if res != 0 {
 		panic(res)
 	}
@@ -41,7 +41,7 @@ func getTermSettings() (settings C.struct_termios) {
 
 // Thin wrapper around tcsetattr.
 func setTermSettings(settings C.struct_termios) {
-	res := C.tcsetattr(C.int(os.Stdout.Fd()), 0, &settings)
+	res := C.tcsetattr(C.int(os.Stderr.Fd()), 0, &settings)
 	if res != 0 {
 		panic(res)
 	}
@@ -89,12 +89,12 @@ func ReadPassword(prompt string) string {
 	setTermSettings(newTermSettings)
 
 	// Display the prompt.
-	fmt.Print(prompt)
+	fmt.Fprint(os.Stderr, prompt)
 
 	// Read from stdin. Add a newline for the user pressing enter.
 	reader := bufio.NewReader(os.Stdin)
 	line, err := reader.ReadString('\n')
-	fmt.Println("")
+	fmt.Fprintln(os.Stderr, "")
 	if err != nil {
 		log.Fatalln("ReadString:", err)
 	}
