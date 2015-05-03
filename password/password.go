@@ -31,9 +31,9 @@ import (
 
 // Thin wrapper around tcgetattr.
 func getTermSettings() (settings C.struct_termios) {
-	res := C.tcgetattr(C.int(os.Stderr.Fd()), &settings)
+	res, err := C.tcgetattr(C.int(os.Stderr.Fd()), &settings)
 	if res != 0 {
-		panic(res)
+		panic(fmt.Sprintf("tcgetattr returned %d: %v", res, err))
 	}
 
 	return
@@ -41,9 +41,9 @@ func getTermSettings() (settings C.struct_termios) {
 
 // Thin wrapper around tcsetattr.
 func setTermSettings(settings C.struct_termios) {
-	res := C.tcsetattr(C.int(os.Stderr.Fd()), 0, &settings)
+	res, err := C.tcsetattr(C.int(os.Stderr.Fd()), 0, &settings)
 	if res != 0 {
-		panic(res)
+		panic(fmt.Sprintf("tcsetattr returned %d: %v", res, err))
 	}
 }
 
