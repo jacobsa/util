@@ -3,5 +3,5 @@
 
 language: go
 arch:
- - amd64le
+ - amd64
  - ppc64le
